@@ -1,6 +1,8 @@
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps, ref, watch } from 'vue'
 import { defineEmits } from 'vue'
+
+const error = ref('')
 
 const props = defineProps({
   name: {
@@ -16,15 +18,20 @@ const props = defineProps({
     required: true,
   },
 })
+
 const emit = defineEmits(['update:modelValue'])
 </script>
 
 <template>
-  <div class="form__block">
-    <label :for="props.name" class="form__block-name">{{ props.label }}</label>
+  <div class="form__block" :class="{ 'has-error': error }">
+    <label :for="props.name" class="form__block-name">
+      <p>{{ props.label }}</p>
+      <div v-if="error" class="form__error">{{ error }}</div>
+    </label>
     <input
-      type="text"
+      :id="props.name"
       :name="props.name"
+      type="text"
       class="form__block-input"
       :value="props.modelValue"
       @input="emit('update:modelValue', $event.target.value)"
@@ -33,7 +40,15 @@ const emit = defineEmits(['update:modelValue'])
   </div>
 </template>
 <style scoped>
+.form__error {
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-red);
+}
 .form__block {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -45,6 +60,9 @@ const emit = defineEmits(['update:modelValue'])
 }
 
 .form__block-name {
+  display: flex;
+  align-items: center;
+  gap: 30px;
   font-size: 0.8125rem;
   color: var(--color-silver);
 }

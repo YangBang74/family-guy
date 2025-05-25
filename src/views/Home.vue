@@ -9,10 +9,43 @@ onMounted(() => {
   form.loadForm()
 })
 
+const validateForm = () => {
+  if (/\d/.test(form.name)) {
+    alert('Имя не должно содержать цифр')
+    return false
+  }
+  if (!/^\d+$/.test(form.age) || +form.age > 150) {
+    alert('Возраст должен быть числом ≤150')
+    return false
+  }
+  for (let i = 0; i < form.childs.length; i++) {
+    const child = form.childs[i]
+    if (/\d/.test(child.name)) {
+      alert(`Имя не должно содержать цифр`)
+      return false
+    }
+    if (!/^\d+$/.test(child.age) || +child.age > 150 || child.age === '') {
+      alert(`Не корреткный возраст`)
+      return false
+    }
+    if (child.age === '' || form.age === '') {
+      alert('Возраст не может быть пустым')
+      return false
+    }
+    if (form.name === '' || child.name === '') {
+      alert('Имя не может быть пустым')
+      return false
+    }
+  }
+  return true
+}
+
 const handleSubmit = (e) => {
   e.preventDefault()
-  form.saveForm()
-  alert('Сохранено!')
+  if (validateForm()) {
+    form.saveForm()
+    alert('Сохранено!')
+  }
 }
 </script>
 
